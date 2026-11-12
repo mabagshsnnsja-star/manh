@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3ff">
+  <title>Đăng nhập</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #24213a;
+      background: #f5f3ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(ellipse at 15% 15%, #e8e4ff 0, transparent 38%),
+        radial-gradient(ellipse at 90% 90%, #dff4f2 0, transparent 35%),
+        #f8f7fc;
+    }
+
+    .login-card {
+      width: min(100%, 420px);
+      padding: clamp(28px, 7vw, 44px);
+      border: 1px solid #ffffff;
+      border-radius: 24px;
+      background: #ffffffed;
+      box-shadow: 0 24px 70px #312e5b18, 0 2px 8px #312e5b0d;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      place-items: center;
+      margin-bottom: 26px;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(145deg, #8272f2, #6251d8);
+      box-shadow: 0 8px 18px #7162e544;
+      font-size: 1.4rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 6vw, 2.15rem);
+      letter-spacing: -.04em;
+    }
+
+    .intro {
+      margin: 10px 0 30px;
+      color: #77758a;
+      line-height: 1.6;
+    }
+
+    .field { margin-top: 19px; }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #39364e;
+      font-size: .9rem;
+      font-weight: 650;
+    }
+
+    input {
+      width: 100%;
+      min-height: 50px;
+      padding: 0 14px;
+      border: 1px solid #e4e2ed;
+      border-radius: 12px;
+      outline: none;
+      color: #24213a;
+      background: #fff;
+      font: inherit;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input::placeholder { color: #aaa8b7; }
+    input:focus {
+      border-color: #7869e8;
+      box-shadow: 0 0 0 4px #7869e81c;
+    }
+
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 68px; }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 12px;
+      padding: 6px;
+      transform: translateY(-50%);
+      border: 0;
+      color: #6f6b87;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 650;
+    }
+
+    .submit {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 27px;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      background: linear-gradient(100deg, #7869e8, #6454d8);
+      box-shadow: 0 9px 18px #7162e533;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      transition: filter .2s, transform .2s;
+    }
+
+    .submit:hover { filter: brightness(1.06); }
+    .submit:active { transform: translateY(1px); }
+
+    .message {
+      min-height: 24px;
+      margin: 16px 0 0;
+      text-align: center;
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    .message.error { color: #c3334a; }
+    .message.success { color: #23845c; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="login-card">
+    <div class="brand-mark" aria-hidden="true">✦</div>
+    <h1>Chào mừng trở lại</h1>
+    <p class="intro">Đăng nhập bằng tài khoản của bạn để tiếp tục.</p>
+
+    <form id="login-form">
+      <div class="field">
+        <label for="username">Tên tài khoản</label>
+        <input id="username" name="username" type="text" placeholder="Nhập tên tài khoản"
+          autocomplete="username" required>
+      </div>
+
+      <div class="field">
+        <label for="password">Mật khẩu</label>
+        <div class="password-wrap">
+          <input id="password" name="password" type="password" placeholder="Nhập mật khẩu"
+            autocomplete="current-password" required>
+          <button class="toggle-password" id="toggle-password" type="button"
+            aria-controls="password" aria-label="Hiện mật khẩu">Hiện</button>
+        </div>
+      </div>
+
+      <button class="submit" type="submit">Đăng nhập</button>
+      <p class="message" id="message" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script>
+    const form = document.querySelector("#login-form");
+    const passwordInput = document.querySelector("#password");
+    const togglePassword = document.querySelector("#toggle-password");
+    const message = document.querySelector("#message");
+
+    togglePassword.addEventListener("click", () => {
+      const showing = passwordInput.type === "password";
+      passwordInput.type = showing ? "text" : "password";
+      togglePassword.textContent = showing ? "Ẩn" : "Hiện";
+      togglePassword.setAttribute("aria-label", showing ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+    });
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+      const username = form.elements.username.value.trim();
+      const password = passwordInput.value;
+      const isValid =
+        (username === "lanbexiu" && password === "10072007") ||
+        (username === "manhlon" && password === "29052007");
+
+      if (isValid) {
+        window.location.href = "ky-niem.html";
+        return;
+      }
+
+      message.textContent = "Tên tài khoản hoặc mật khẩu chưa chính xác.";
+      message.className = "message error";
+    });
+  </script>
+</body>
+</html>
